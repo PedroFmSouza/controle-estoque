@@ -9,7 +9,9 @@ public class Produto {
 
     // Construtor
     public Produto(int id, String nome, String categoria, double preco, int quantidade) {
+        validarId(id);
         this.id = id;
+
         this.nome = nome;
         this.categoria = categoria;
         this.preco = preco;
@@ -17,20 +19,19 @@ public class Produto {
     }
 
     // Getters e Setters
-    public int getId() {
-        return id;
-    }
+    public int getId() {return id;}
 
     public void setId(int id) {
+        validarId(id);
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
-    }
+    public String getNome() {return nome;}
 
     public void setNome(String nome) {
-        this.nome = nome;
+        if (nome == null || nome.trim().isEmpty())
+            throw new IllegalArgumentException("Nome do produto não pode ser vazio.");
+        this.nome = nome.trim();
     }
 
     public String getCategoria() {
@@ -38,7 +39,9 @@ public class Produto {
     }
 
     public void setCategoria(String categoria) {
-        this.categoria = categoria;
+        if (categoria == null || categoria.trim().isEmpty())
+            throw new IllegalArgumentException("Categoria não pode ser vazia.");
+        this.categoria = categoria.trim();
     }
 
     public double getPreco() {
@@ -46,7 +49,7 @@ public class Produto {
     }
 
     public void setPreco(double preco) {
-        this.preco = preco;
+        if (preco < 0) throw new IllegalArgumentException("O preço não pode ser negativo");
     }
 
     public int getQuantidade() {
@@ -54,7 +57,11 @@ public class Produto {
     }
 
     public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
+        if (quantidade<0) throw new IllegalArgumentException("Quantidade não pode ser negativa");
+    }
+
+    private void validarId(int id){
+        if (id < 0) throw new IllegalArgumentException("ID não pode ser negativo");
     }
 
     // Representação em texto
