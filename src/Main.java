@@ -30,24 +30,27 @@ public class Main {
 
             switch (opcao) {
                 case 1 -> {
-                    System.out.print("ID: ");
-                    int id = sc.nextInt();
-                    sc.nextLine();
+                    try {
+                        System.out.print("ID: ");
+                        int id = sc.nextInt(); sc.nextLine();
 
-                    System.out.print("Nome: ");
-                    String nome = sc.nextLine();
+                        System.out.print("Nome: ");
+                        String nome = sc.nextLine();
 
-                    System.out.print("Categoria: ");
-                    String categoria = sc.nextLine();
+                        System.out.print("Categoria: ");
+                        String categoria = sc.nextLine();
 
-                    System.out.print("Preço: ");
-                    double preco = sc.nextDouble();
+                        System.out.print("Preço: ");
+                        double preco = sc.nextDouble();
 
-                    System.out.print("Quantidade: ");
-                    int quantidade = sc.nextInt();
+                        System.out.print("Quantidade: ");
+                        int quantidade = sc.nextInt();
 
-                    Produto produto = new Produto(id, nome, categoria, preco, quantidade);
-                    estoque.adicionarProduto(produto);
+                        Produto produto = new Produto(id, nome, categoria, preco, quantidade);
+                        estoque.adicionarProduto(produto);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Entrada inválida: " + e.getMessage());
+                    }
                 }
                 case 2 -> {
                     System.out.print("ID do produto a remover: ");
@@ -62,20 +65,24 @@ public class Main {
                 }
                 case 4 -> estoque.listarProdutos();
                 case 5 -> {
-                    System.out.print("ID do produto: ");
-                    int id = sc.nextInt();
-                    System.out.print("Nova quantidade: ");
-                    int qtd = sc.nextInt();
-                    estoque.atualizarQuantidade(id, qtd);
+                    try {
+                        System.out.print("ID do produto: ");
+                        int id = sc.nextInt();
+                        System.out.print("Nova quantidade: ");
+                        int qtd = sc.nextInt();
+                        estoque.atualizarQuantidade(id, qtd);
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Entrada inválida: " + e.getMessage());
+                    }
                 }
                 case 6 -> estoque.alertaEstoqueBaixo();
                 case 7 -> ArquivoHelper.salvarEstoque(estoque.getProdutos());
                 case 0 -> {
                     ArquivoHelper.salvarEstoque(estoque.getProdutos()); // salvar antes de sair
                     executando = false;
-                    System.out.println("👋 Saindo do sistema...");
+                    System.out.println("Saindo do sistema...");
                 }
-                default -> System.out.println("❌ Opção inválida.");
+                default -> System.out.println("Opção inválida.");
             }
         }
 
