@@ -28,7 +28,7 @@ src/
 
 ---
 
-## 🛠 Tecnologias Utilizadas
+##  Tecnologias Utilizadas
 - **Java 17+** (pode rodar em versões anteriores também)
 - **IntelliJ IDEA Community** (ou qualquer IDE de sua preferência)
 - **POO (Herança, Encapsulamento, Polimorfismo)**
