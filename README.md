@@ -1,11 +1,11 @@
-# 📦 Controle de Estoque Inteligente
+#  Controle de Estoque Inteligente
 
 Um sistema simples em **Java** para gerenciar produtos em estoque, utilizando conceitos de **Programação Orientada a Objetos (POO)**.  
 Ideal para treinar lógica, classes, listas, persistência de dados e boas práticas de organização em packages.
 
 ---
 
-## 🚀 Funcionalidades
+##  Funcionalidades
 - Cadastrar novos produtos (id, nome, categoria, preço, quantidade)
 - Listar todos os produtos cadastrados
 - Buscar produto pelo nome
@@ -16,7 +16,7 @@ Ideal para treinar lógica, classes, listas, persistência de dados e boas prát
 
 ---
 
-## 🧱 Estrutura do Projeto
+##  Estrutura do Projeto
 
 src/
 └── com.pedro.estoque/
