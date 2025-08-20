@@ -1,16 +1,17 @@
+// Limite não está sendo requisitado
+// CSV está com defeito
+
+
 import com.pedro.estoque.model.Produto;
 import com.pedro.estoque.service.Estoque;
-import com.pedro.estoque.util.ArquivoHelper;
+import com.pedro.estoque.util.ArquivoCSV;
 
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Estoque estoque = new Estoque();
+        Estoque estoque = new Estoque("estoque.csv");
         Scanner sc = new Scanner(System.in);
-
-        // carregar produtos do arquivo
-        estoque.getProdutos().addAll(ArquivoHelper.carregarEstoque());
 
         boolean executando = true;
         while (executando) {
@@ -21,7 +22,9 @@ public class Main {
             System.out.println("4. Listar produtos");
             System.out.println("5. Atualizar quantidade");
             System.out.println("6. Alertar estoque baixo");
-            System.out.println("7. Salvar estoque");
+            System.out.println("7 - Mostrar valor total do estoque");
+            System.out.println("8 - Relatório de produtos em baixo estoque");
+            System.out.println("9 - Exportar estoque em CSV");
             System.out.println("0. Sair");
             System.out.print("Escolha: ");
 
@@ -76,11 +79,14 @@ public class Main {
                     }
                 }
                 case 6 -> estoque.alertaEstoqueBaixo();
-                case 7 -> ArquivoHelper.salvarEstoque(estoque.getProdutos());
+                case 7 -> estoque.valorTotalEstoque();
+                case 8 -> {estoque.alertaEstoqueBaixo();}
+                case 9 -> estoque.exportarCSV("estoque.csv");
                 case 0 -> {
-                    ArquivoHelper.salvarEstoque(estoque.getProdutos()); // salvar antes de sair
-                    executando = false;
-                    System.out.println("Saindo do sistema...");
+                    estoque.salvar();
+                    System.out.println("Saindo... Estoque salvo!");
+                    sc.close();
+                    System.exit(0);
                 }
                 default -> System.out.println("Opção inválida.");
             }
