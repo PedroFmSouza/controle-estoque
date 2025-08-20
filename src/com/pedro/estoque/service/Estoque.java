@@ -1,25 +1,43 @@
 package com.pedro.estoque.service;
 
 import com.pedro.estoque.model.Produto;
+import com.pedro.estoque.util.ArquivoCSV;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Estoque {
     private List<Produto> produtos;
+    private ArquivoCSV arquivo;
 
-    // Construtor
     public Estoque() {
         this.produtos = new ArrayList<>();
     }
 
-    // Adicionar produto
-    public void adicionarProduto(Produto produto) {
-        produtos.add(produto);
-        System.out.println("Produto adicionado com sucesso!");
+    public Estoque(String caminhoArquivo) {
+        this.arquivo = new ArquivoCSV(caminhoArquivo);
+        this.produtos = arquivo.carregar(); // carrega ao iniciar
     }
 
-    // Remover produto por ID
+
+    // Impede ID duplicado
+    public boolean adicionarProduto(Produto produto) {
+        if (produto == null) {
+            System.out.println("Produto nulo não pode ser adicionado.");
+            return false;
+        }
+        if (existeId(produto.getId())) {
+            System.out.println("Já existe produto com ID " + produto.getId() + ".");
+            return false;
+        }
+        produtos.add(produto);
+        System.out.println("Produto adicionado com sucesso!");
+        return true;
+    }
+
     public boolean removerProduto(int id) {
         for (Produto p : produtos) {
             if (p.getId() == id) {
@@ -32,7 +50,6 @@ public class Estoque {
         return false;
     }
 
-    // Buscar produto por nome
     public Produto buscarProdutoPorNome(String nome) {
         for (Produto p : produtos) {
             if (p.getNome().equalsIgnoreCase(nome)) {
@@ -42,47 +59,77 @@ public class Estoque {
         return null;
     }
 
-    // Listar todos os produtos
+    public Produto buscarProdutoPorId(int id) {
+        for (Produto p : produtos) {
+            if (p.getId() == id) return p;
+        }
+        return null;
+    }
+
     public void listarProdutos() {
         if (produtos.isEmpty()) {
             System.out.println("Nenhum produto no estoque.");
         } else {
-            for (Produto p : produtos) {
-                System.out.println(p);
-            }
+            for (Produto p : produtos) System.out.println(p);
         }
     }
 
-    // Atualizar quantidade de um produto
-    public void atualizarQuantidade(int id, int quantidade) {
-        for (Produto p : produtos) {
-            if (p.getId() == id) {
-                p.setQuantidade(quantidade);
-                System.out.println("Quantidade atualizada com sucesso!");
-                return;
-            }
+    // Atualiza quantidade absoluta (define novo valor)
+    public void atualizarQuantidade(int id, int novaQuantidade) {
+        if (novaQuantidade < 0) {
+            System.out.println("Quantidade não pode ser negativa.");
+            return;
         }
-        System.out.println("Produto não encontrado.");
+        Produto p = buscarProdutoPorId(id);
+        if (p == null) {
+            System.out.println("Produto não encontrado.");
+            return;
+        }
+        p.setQuantidade(novaQuantidade);
+        System.out.println("Quantidade atualizada com sucesso!");
     }
 
-    // Verificar estoque baixo (ex: < 5 unidades)
     public void alertaEstoqueBaixo() {
-        boolean alerta = false;
+        int limite = 5;
+        boolean encontrou = false;
         for (Produto p : produtos) {
-            if (p.getQuantidade() < 5) {
-                System.out.println("Estoque baixo: " + p);
-                alerta = true;
+            if (p.getQuantidade() <= limite) {
+                System.out.println("Estoque baixo (" + p.getQuantidade()+" unid):");
+                encontrou = true;
             }
         }
-        if (!alerta) {
-            System.out.println("Nenhum produto com estoque baixo.");
+        if (!encontrou) System.out.println("Nenhum produto com estoque baixo.");
+    }
+
+    public void valorTotalEstoque() {
+        double total = 0;
+        for (Produto p : produtos) {
+            total += p.getPreco() * p.getQuantidade();
+        }
+        System.out.printf("Valor total do estoque: R$ %.2f%n", total);
+    }
+
+    public void exportarCSV(String caminhoArquivo) {
+        try (FileWriter writer = new FileWriter(caminhoArquivo)) {
+            writer.write("ID,Nome,Categoria,Preço,Quantidade\n");
+            for (Produto p : produtos) {
+                writer.write(p.getId() + "," + p.getNome() + "," +
+                        p.getCategoria() + "," + p.getPreco() + "," +
+                        p.getQuantidade() + "\n");
+            }
+            System.out.println("Relatório exportado para " + caminhoArquivo);
+        } catch (IOException e) {
+            System.out.println("Erro ao exportar CSV: " + e.getMessage());
         }
     }
 
-    // Getter para lista de produtos
-    public List<Produto> getProdutos() {
-        return produtos;
+    public void salvar() {
+        arquivo.salvar(produtos);
     }
+
+
+
+    public List<Produto> getProdutos() { return produtos; }
 
     private boolean existeId(int id) {
         return produtos.stream().anyMatch(p -> p.getId() == id);
